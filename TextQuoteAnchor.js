@@ -63,12 +63,7 @@ export default class TextQuoteAnchor {
     let root = this.root;
     let text = root.textContent;
 
-    // Whitespace is whitespace, do not fuss about types and amounts of it.
-    function spaceInsensitiveRegExp(string) {
-        let regex = string.replace(/\s+/g, '\\s+');
-        return new RegExp(regex, 'g');
-    }
-    let pattern = spaceInsensitiveRegExp(this.exact);
+    let pattern = quoteToRegExp(this.exact);
 
     // Search for the pattern.
     let start = text.search(pattern);
@@ -79,4 +74,23 @@ export default class TextQuoteAnchor {
 
     return new TextPositionAnchor(root, start, end);
   }
+}
+
+// Convert a quote to a regular expression to find the quoted text.
+function quoteToRegExp(string) {
+    function regexEscape(string) {
+        return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    }
+    let escapedString = regexEscape(string);
+
+    // Whitespace is whitespace, do not fuss about types and amounts of it.
+    let regex = escapedString.replace(/\s+/g, '\\s+');
+
+    // Let ellipsis match any text.
+    const ellipsis = '...';
+    // Escape twice: we want to find the escaped sequence '\.\.\.' in the regex.
+    let escapedEllipsis = regexEscape(regexEscape(ellipsis));
+    regex = regex.replace(new RegExp(escapedEllipsis, 'g'), '(?:.|[\\r\\n])+');
+
+    return new RegExp(regex, 'g');
 }
