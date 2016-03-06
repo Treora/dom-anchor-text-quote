@@ -59,7 +59,7 @@ export default class TextQuoteAnchor {
     return selector;
   }
 
-  toPositionAnchor(options = {}) {
+  toPositionAnchor() {
     let root = this.root;
     let text = root.textContent;
 
