@@ -30,7 +30,6 @@
     ]
   },
   "dependencies": {
-    "diff-match-patch": "^1.0.0",
     "dom-anchor-text-position": "^2.0.0"
   },
   "devDependencies": {
